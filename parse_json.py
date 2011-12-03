@@ -25,19 +25,18 @@ def parse():
         
         # Initialization if variable has not been seen before
         if variable_name not in variables_dict:
-            variables_dict[variable_name] = {}
-            variables_dict[variable_name]["time"] = []
-            variables_dict[variable_name]["value"] = []
+            variables_dict[variable_name] = []
         
         # Manipulates the timestamp to fit the UTC format
+        timestamp = string.lstrip(timestamp, "3")
         split_timestamp = string.split(timestamp)
         split_timestamp.insert(1, "T")      # The "T" in between date and time
+        split_timestamp.insert(0, "2")      # Set year to 2
         split_timestamp.append("Z")         # The "Z" for the timezone
         timestamp = string.join(split_timestamp, "")
         
         # Adds it to the variable dict
-        variables_dict[variable_name]["time"].append(timestamp)
-        variables_dict[variable_name]["value"].append(variable_value)
+        variables_dict[variable_name].append(dict([("time", timestamp), ("value", variable_value)]))
     
     # Checking
     print variables_dict
