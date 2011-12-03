@@ -34,14 +34,13 @@ function createLineGraph(name, values) {
       min = d3.min([values[row].value, min]);
       max = d3.max([values[row].value, max]);
   }
-
     
-  var h = 200, 
-      w = 400,
-      p = 30,
+  var h = 400, 
+      w = 450,
+      p = 25,
       fill = d3.scale.category10(),
       x = d3.time.scale().domain([times[0], times[times.length - 1]]).range([p, w - p]),
-      y = d3.scale.linear().domain([min, max]).range([h - p, p]),
+      y = d3.scale.linear().domain([min, max + 10]).range([h - p, p]),
       line = d3.svg.line()
                 .x(function(d) { return x(d.time); })
                 .y(function(d) { return y(d.value); });
@@ -55,30 +54,48 @@ function createLineGraph(name, values) {
   // Add tick marks 
   var axisGroup = vis.append("svg:g");
 
+  var xTicksNum = 5,
+      yTicksNum = 5;
+
+  // x axis
+  axisGroup.append("svg:line")
+    .attr("x1", p - 2)
+    .attr("x2", w - p - 2)
+    .attr("y1", y(0))
+    .attr("y2", y(0))
+    .attr("class", "axisGroup");
+
+  // y axis 
+  axisGroup.append("svg:line")
+    .attr("y1", y(d3.min(y.ticks(yTicksNum))) + 8)
+    .attr("y2", y(d3.max(y.ticks(yTicksNum))))
+    .attr("x1", p - 2)
+    .attr("x2", p - 2)
+    .attr("class", "axisGroup");
+   
   // x axis tick marks
   axisGroup.selectAll(".xTicks")
-    .data(x.ticks(5))
+    .data(x.ticks(xTicksNum))
   .enter().append("svg:line")
     .attr("x1", x)
     .attr("x2", x)
     .attr("y1", h - p)
     .attr("y2", h - p + 5)
-    .attr("stroke", "black")
-    .attr("class", "xTicks");
+    .attr("class", "axisGroup");
 
   // y axis tick marks
   axisGroup.selectAll(".yTicks")
-    .data(y.ticks(3))
+    .data(y.ticks(yTicksNum))
   .enter().append("svg:line")
     .attr("x1", p - 10)
-    .attr("x2", p - 5)
+    .attr("x2", p - 2)
     .attr("y1", y)
     .attr("y2", y)
-    .attr("stroke", "black")
+    .attr("class", "axisGroup");
 
   // x tick text
   axisGroup.selectAll("text.yLabels")
-    .data(x.ticks(5))
+    .data(x.ticks(xTicksNum))
   .enter().append("svg:text")
     .text(x.tickFormat(3))
     .attr("y", h - p + 10)
@@ -88,14 +105,13 @@ function createLineGraph(name, values) {
    
   // y tick text
   axisGroup.selectAll("text.yLabels")
-    .data(y.ticks(3))
+    .data(y.ticks(yTicksNum))
   .enter().append("svg:text")
     .text(y.tickFormat(3))
     .attr("y", y)
     .attr("x", p - 12)
     .attr("dy", ".35em")
     .attr("text-anchor", "end");
-   
 
   // Create data line
   var dataLine = vis.append("svg:g");
