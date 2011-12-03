@@ -15,11 +15,11 @@ d3.json("patient_data.json", function(json) {
   var temperatureValues = data["Temp Value"];
 
   // Easily modified to iterate over each array
-  createLineGraph(temperatureValues);
+  createLineGraph("Temperatures", temperatureValues);
 
 });
 
-function createLineGraph(values) {
+function createLineGraph(name, values) {
 
   var timeFormat = d3.time.format("%Y-%m-%dT%H:%M:%SZ");
 
@@ -36,9 +36,9 @@ function createLineGraph(values) {
   }
 
     
-  var h = 50, 
-      w = 250,
-      p = 10,
+  var h = 200, 
+      w = 400,
+      p = 30,
       fill = d3.scale.category10(),
       x = d3.time.scale().domain([times[0], times[times.length - 1]]).range([p, w - p]),
       y = d3.scale.linear().domain([min, max]).range([h - p, p]),
@@ -55,16 +55,47 @@ function createLineGraph(values) {
   // Add tick marks 
   var axisGroup = vis.append("svg:g");
 
+  // x axis tick marks
   axisGroup.selectAll(".xTicks")
     .data(x.ticks(5))
   .enter().append("svg:line")
     .attr("x1", x)
-    .attr("y1", h - 5)
     .attr("x2", x)
-    .attr("y2", h + 5)
+    .attr("y1", h - p)
+    .attr("y2", h - p + 5)
     .attr("stroke", "black")
     .attr("class", "xTicks");
 
+  // y axis tick marks
+  axisGroup.selectAll(".yTicks")
+    .data(y.ticks(3))
+  .enter().append("svg:line")
+    .attr("x1", p - 10)
+    .attr("x2", p - 5)
+    .attr("y1", y)
+    .attr("y2", y)
+    .attr("stroke", "black")
+
+  // x tick text
+  axisGroup.selectAll("text.yLabels")
+    .data(x.ticks(5))
+  .enter().append("svg:text")
+    .text(x.tickFormat(3))
+    .attr("y", h - p + 10)
+    .attr("x", x)
+    .attr("dy", ".35em")
+    .attr("text-anchor", "middle");
+   
+  // y tick text
+  axisGroup.selectAll("text.yLabels")
+    .data(y.ticks(3))
+  .enter().append("svg:text")
+    .text(y.tickFormat(3))
+    .attr("y", y)
+    .attr("x", p - 12)
+    .attr("dy", ".35em")
+    .attr("text-anchor", "end");
+   
 
   // Create data line
   var dataLine = vis.append("svg:g");
@@ -75,5 +106,5 @@ function createLineGraph(values) {
     .attr("class", "variable");
   // Add title to line
   dataLine.append("svg:title")
-    .text("Temperature");
+    .text(name);
 };
