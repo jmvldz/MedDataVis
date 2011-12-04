@@ -68,13 +68,18 @@ function createLineGraph(name, values, timeDomain) {
                 .y(function(d) { return y(d.value); });
 
   // Create visualization
-  var vis = d3.select("#charts")
-                    .append("li")
-                    .append("div")
-                    .append("p").html(name)
-                    .append("svg:svg").attr("class", "chart")
+  var chart = d3.select("#charts")
+                      .append("li")
+                      .append("div");
+  
+  // Add chart name
+  chart.append("p")
+      .html(name);
+
+  var vis = chart.append("svg:svg").attr("class", "chart")
                     .attr("height", h)
                     .attr("width", w);
+
 
   // Add tick marks 
   var axisGroup = vis.append("svg:g");
@@ -149,11 +154,11 @@ function createLineGraph(name, values, timeDomain) {
   dataLine.append("svg:title")
     .text(name);
 
-  vis.selectAll('.point')
-    .data(data)
-  .enter().append("svg:circle")
-    .attr("cx", (d, i) -> x(time))
-    .attr("cy", (d) -> y(d));
+  // vis.selectAll('.point')
+  //   .data(data)
+  // .enter().append("svg:circle")
+  //    .attr("cx", (d) -> 3)
+  //    .attr("cy", 50);
 };
 
 
