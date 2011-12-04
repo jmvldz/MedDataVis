@@ -48,7 +48,8 @@ function createLineGraph(name, values) {
                 .y(function(d) { return y(d.value); });
 
   // Create visualization
-  var vis = d3.select("#sparkline")
+  var vis = d3.select("#charts")
+                    .append("li")
                     .append("div")
                     .append("svg:svg").attr("class", "chart")
                     .attr("height", h)
@@ -127,3 +128,10 @@ function createLineGraph(name, values) {
   dataLine.append("svg:title")
     .text(name);
 };
+
+
+// Enables dragging of charts
+$(function() {
+  $("#charts").sortable();
+  $("#charts").disableSelection();
+});
