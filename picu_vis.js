@@ -1,3 +1,7 @@
+// Constants
+var MAX_INT = 4294967295;
+
+
 var w = 960,
     h = 500,
     fill = d3.scale.category20();
@@ -26,7 +30,7 @@ function createLineGraph(name, values) {
   var timeFormat = d3.time.format("%Y-%m-%dT%H:%M:%SZ");
 
   // calculate max and min values in data
-  var max=0, min=0;
+  var max=0, min=MAX_INT;
   var times = new Array();
   for(var row in values) {
       values[row].value = parseFloat(values[row].value);
@@ -37,12 +41,12 @@ function createLineGraph(name, values) {
       max = d3.max([values[row].value, max]);
   }
     
-  var h = 400, 
-      w = 450,
+  var h = 100, 
+      w = 700,
       p = 25,
       fill = d3.scale.category10(),
       x = d3.time.scale().domain([times[0], times[times.length - 1]]).range([p, w - p]),
-      y = d3.scale.linear().domain([min, max + 10]).range([h - p, p]),
+      y = d3.scale.linear().domain([.95*min, 1.05*max]).range([h - p, p]),
       line = d3.svg.line()
                 .x(function(d) { return x(d.time); })
                 .y(function(d) { return y(d.value); });
