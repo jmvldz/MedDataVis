@@ -5,6 +5,9 @@ var w = 960,
     h = 500,
     fill = d3.scale.category20();
 
+var xTicksNum = 5,
+    yTicksNum = 5;
+
 var data;
 
 var vis = d3.select("#chart")
@@ -43,6 +46,17 @@ d3.json("patient_data.json", function(json) {
   createLineGraph("Temperatures", data["Temp Value"], timeDomain);
   createLineGraph("SaO2 (Monitor)", data["SaO2 (monitor)"], timeDomain);
   createLineGraph("Heart Rate", data["HR"], timeDomain);
+
+  // Graph intervention data
+  var interventionData = [];
+  var interventionNames = [];
+  interventionData.push(data["Dopamine"]);
+  interventionNames.push("Dopamine");
+  interventionData.push(data["Epinephrine"]);
+  interventionNames.push("Epinephrine");
+  interventionData.push(data["PT control"]);
+  interventionNames.push("PT control");
+  createInterventionPlot(interventionData, interventionNames, timeDomain);
 });
 
 function createLineGraph(name, values, timeDomain) {
@@ -84,9 +98,6 @@ function createLineGraph(name, values, timeDomain) {
 
   // Add tick marks 
   var axisGroup = vis.append("svg:g");
-
-  var xTicksNum = 5,
-      yTicksNum = 5;
 
   // x axis
   axisGroup.append("svg:line")
@@ -163,6 +174,70 @@ function createLineGraph(name, values, timeDomain) {
      .attr("class", "point");
 };
 
+function createInterventionPlot(interventionValues, interventionNames, timeDomain) {
+  
+  // Parse time values for data
+  var timeFormat = d3.time.format("%Y-%m-%dT%H:%M:%SZ");
+
+  // Set variables
+  var h = 200, 
+      w = 700,
+      p_x = 40,
+      p_y = 25,
+      p_ordinal = 1.0,
+      fill = d3.scale.category10(),
+      x = d3.time.scale().domain(timeDomain).range([p_x, w - p_x]),
+      y = d3.scale.ordinal().domain(interventionNames)
+        .rangePoints([h - p_y, p_y], p_ordinal);
+
+  var chart = d3.select("#charts")
+                      .append("li")
+                      .append("div");
+
+  // Add chart name
+  chart.append("p")
+      .html(name);
+
+  var vis = chart.append("svg:svg").attr("class", "chart")
+                    .attr("height", h)
+                    .attr("width", w);
+
+  var rects = vis.append("svg:g");
+  // Add rectangles for each variable
+  for (var variable in interventionValues)
+  {
+    // Appends rectangles
+    rects.selectAll("rect.Shapes")
+      .data(interventionValues[variable])
+    .enter().append("svg:rect")
+      .attr("fill", fill(variable))
+      .attr("width", 4)
+      .attr("height", 4)
+      .attr("x", function (d) { return x(timeFormat.parse(d.time)); })
+      .attr("y", y(variable));
+  }
+
+  var axisGroup = vis.append("svg:g");
+
+  // Ordinal Y value labels
+  axisGroup.selectAll("text.yLabels")
+    .data(interventionNames)
+  .enter().append("svg:text")
+    .text(function (d) { return d; } )
+    .attr("y", function (d) { return y(d); })
+    .attr("x", p_x)
+    .attr("dy", ".35em")
+    .attr("class", "text.oLabel");
+
+  // x tick text
+  axisGroup.selectAll("text.yLabels")
+    .data(x.ticks(xTicksNum))
+  .enter().append("svg:text")
+    .text(x.tickFormat(3))
+    .attr("y", y(interventionNames[0]) + 20)
+    .attr("x", x)
+    .attr("dy", ".35em")
+}
 
 // Enables dragging of charts
 $(function() {
