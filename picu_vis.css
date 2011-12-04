@@ -28,5 +28,5 @@ body {
 .point {
 	fill: white;
 	stroke-width: 2;
-	stroke: black;
+	stroke: #1f77b4;
 }

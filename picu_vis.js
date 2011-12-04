@@ -159,7 +159,7 @@ function createLineGraph(name, values, timeDomain) {
   .enter().append("svg:circle")
      .attr("cx", function(d) { return x(d.time); })
      .attr("cy", function(d) { return y(d.value); })
-     .attr("r", 4)
+     .attr("r", 2)
      .attr("class", "point");
 };
 
