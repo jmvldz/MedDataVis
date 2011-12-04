@@ -61,7 +61,7 @@ function createLineGraph(name, values, timeDomain) {
       p_x = 40;
       p_y = 25,
       fill = d3.scale.category10(),
-      x = d3.time.scale().domain([times[0], times[times.length - 1]]).range([p_x, w - p_x]),
+      x = d3.time.scale().domain(timeDomain).range([p_x, w - p_x]),
       y = d3.scale.linear().domain([.95*min, 1.05*max]).range([h - p_y, p_y]),
       line = d3.svg.line()
                 .x(function(d) { return x(d.time); })
