@@ -154,11 +154,13 @@ function createLineGraph(name, values, timeDomain) {
   dataLine.append("svg:title")
     .text(name);
 
-  // vis.selectAll('.point')
-  //   .data(data)
-  // .enter().append("svg:circle")
-  //    .attr("cx", (d) -> 3)
-  //    .attr("cy", 50);
+  dataLine.selectAll('.point')
+    .data(values)
+  .enter().append("svg:circle")
+     .attr("cx", function(d) { return x(d.time); })
+     .attr("cy", function(d) { return y(d.value); })
+     .attr("r", 4)
+     .attr("class", "point");
 };
 
 

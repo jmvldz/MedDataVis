@@ -24,3 +24,9 @@ body {
 .axisGroup {
     stroke: black;
 }
+
+.point {
+	fill: transparent;
+	stroke-width: 2;
+	stroke: black;
+}
