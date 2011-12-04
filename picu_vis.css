@@ -30,3 +30,7 @@ body {
 	stroke-width: 2;
 	stroke: #1f77b4;
 }
+
+#charts li {
+	cursor: move;
+}
