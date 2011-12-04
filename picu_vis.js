@@ -9,30 +9,46 @@ var vis = d3.select("#chart")
     .attr("width", w)
     .attr("height", h);
 
+function sortDates(a, b)
+{
+    return a.getTime() - b.getTime();
+}
+
 d3.json("patient_data.json", function(json) {
   data = json;
 
+  // Parse the time values into date objects
+  var timeFormat = d3.time.format("%Y-%m-%dT%H:%M:%SZ");
+  var times = [];
+  for(var variable in data) {
+      for(var row in variable) {
+        if (data[variable][row]) {
+          times.push(timeFormat.parse(data[variable][row].time));
+        }
+      }
+  }
+
+  // Get min and max date
+  var sorted = times.sort(sortDates);
+  var timeDomain = [sorted[0], sorted[sorted.length - 1]];
+
+  // Graph these values
   var temperatureValues = data["Temp Value"];
   var sa02 = data["SaO2 (monitor)"];
 
   // Easily modified to iterate over each array
-  createLineGraph("Temperatures", temperatureValues);
-  createLineGraph("SaO2 (Monitor)", sa02);
-
+  createLineGraph("Temperatures", temperatureValues, timeDomain);
+  createLineGraph("SaO2 (Monitor)", sa02, timeDomain);
 });
 
-function createLineGraph(name, values) {
+function createLineGraph(name, values, timeDomain) {
 
   var timeFormat = d3.time.format("%Y-%m-%dT%H:%M:%SZ");
-
   // calculate max and min values in data
   var max=0, min=0;
-  var times = new Array();
   for(var row in values) {
       values[row].value = parseFloat(values[row].value);
       values[row].time = timeFormat.parse(values[row].time);
-      times[row] = values[row].time;
-
       min = d3.min([values[row].value, min]);
       max = d3.max([values[row].value, max]);
   }
@@ -41,7 +57,7 @@ function createLineGraph(name, values) {
       w = 450,
       p = 25,
       fill = d3.scale.category10(),
-      x = d3.time.scale().domain([times[0], times[times.length - 1]]).range([p, w - p]),
+      x = d3.time.scale().domain(timeDomain).range([p, w - p]),
       y = d3.scale.linear().domain([min, max + 10]).range([h - p, p]),
       line = d3.svg.line()
                 .x(function(d) { return x(d.time); })

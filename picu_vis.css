@@ -6,3 +6,11 @@ path.variable {
 svg.chart {
 	border: 1px solid black;
 }
+
+body {
+  font: 10px sans-serif;
+}
+
+.axisGroup {
+    stroke: black;
+}
