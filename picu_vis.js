@@ -56,6 +56,7 @@ function createLineGraph(name, values) {
   var vis = d3.select("#charts")
                     .append("li")
                     .append("div")
+                    .append("p").html(name)
                     .append("svg:svg").attr("class", "chart")
                     .attr("height", h)
                     .attr("width", w);
@@ -132,6 +133,12 @@ function createLineGraph(name, values) {
   // Add title to line
   dataLine.append("svg:title")
     .text(name);
+
+  vis.selectAll('.point')
+    .data(data)
+  .enter().append("svg:circle")
+    .attr("cx", (d, i) -> x(time))
+    .attr("cy", (d) -> y(d));
 };
 
 
