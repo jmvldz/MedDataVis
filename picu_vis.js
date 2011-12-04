@@ -43,10 +43,11 @@ function createLineGraph(name, values) {
     
   var h = 100, 
       w = 700,
-      p = 25,
+      p_x = 40;
+      p_y = 25,
       fill = d3.scale.category10(),
-      x = d3.time.scale().domain([times[0], times[times.length - 1]]).range([p, w - p]),
-      y = d3.scale.linear().domain([.95*min, 1.05*max]).range([h - p, p]),
+      x = d3.time.scale().domain([times[0], times[times.length - 1]]).range([p_x, w - p_x]),
+      y = d3.scale.linear().domain([.95*min, 1.05*max]).range([h - p_y, p_y]),
       line = d3.svg.line()
                 .x(function(d) { return x(d.time); })
                 .y(function(d) { return y(d.value); });
@@ -67,8 +68,8 @@ function createLineGraph(name, values) {
 
   // x axis
   axisGroup.append("svg:line")
-    .attr("x1", p - 2)
-    .attr("x2", w - p - 2)
+    .attr("x1", p_x - 2)
+    .attr("x2", w - p_x - 2)
     .attr("y1", y(0))
     .attr("y2", y(0))
     .attr("class", "axisGroup");
@@ -77,8 +78,8 @@ function createLineGraph(name, values) {
   axisGroup.append("svg:line")
     .attr("y1", y(d3.min(y.ticks(yTicksNum))) + 8)
     .attr("y2", y(d3.max(y.ticks(yTicksNum))))
-    .attr("x1", p - 2)
-    .attr("x2", p - 2)
+    .attr("x1", p_x - 2)
+    .attr("x2", p_x - 2)
     .attr("class", "axisGroup");
    
   // x axis tick marks
@@ -87,16 +88,16 @@ function createLineGraph(name, values) {
   .enter().append("svg:line")
     .attr("x1", x)
     .attr("x2", x)
-    .attr("y1", h - p)
-    .attr("y2", h - p + 5)
+    .attr("y1", h - p_y)
+    .attr("y2", h - p_y + 5)
     .attr("class", "axisGroup");
 
   // y axis tick marks
   axisGroup.selectAll(".yTicks")
     .data(y.ticks(yTicksNum))
   .enter().append("svg:line")
-    .attr("x1", p - 10)
-    .attr("x2", p - 2)
+    .attr("x1", p_x - 10)
+    .attr("x2", p_x - 2)
     .attr("y1", y)
     .attr("y2", y)
     .attr("class", "axisGroup");
@@ -106,7 +107,7 @@ function createLineGraph(name, values) {
     .data(x.ticks(xTicksNum))
   .enter().append("svg:text")
     .text(x.tickFormat(3))
-    .attr("y", h - p + 10)
+    .attr("y", h - p_y + 10)
     .attr("x", x)
     .attr("dy", ".35em")
     .attr("text-anchor", "middle");
@@ -117,7 +118,7 @@ function createLineGraph(name, values) {
   .enter().append("svg:text")
     .text(y.tickFormat(3))
     .attr("y", y)
-    .attr("x", p - 12)
+    .attr("x", p_x - 12)
     .attr("dy", ".35em")
     .attr("text-anchor", "end");
 
