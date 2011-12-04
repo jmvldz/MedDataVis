@@ -40,8 +40,9 @@ d3.json("patient_data.json", function(json) {
   var sa02 = data["SaO2 (monitor)"];
 
   // Easily modified to iterate over each array
-  createLineGraph("Temperatures", temperatureValues, timeDomain);
-  createLineGraph("SaO2 (Monitor)", sa02, timeDomain);
+  createLineGraph("Temperatures", data["Temp Value"], timeDomain);
+  createLineGraph("SaO2 (Monitor)", data["SaO2 (monitor)"], timeDomain);
+  createLineGraph("Heart Rate", data["HR"], timeDomain);
 });
 
 function createLineGraph(name, values, timeDomain) {
@@ -91,8 +92,8 @@ function createLineGraph(name, values, timeDomain) {
   axisGroup.append("svg:line")
     .attr("x1", p_x - 2)
     .attr("x2", w - p_x - 2)
-    .attr("y1", y(0))
-    .attr("y2", y(0))
+    .attr("y1", y(min))
+    .attr("y2", y(min))
     .attr("class", "axisGroup");
 
   // y axis 
@@ -109,8 +110,8 @@ function createLineGraph(name, values, timeDomain) {
   .enter().append("svg:line")
     .attr("x1", x)
     .attr("x2", x)
-    .attr("y1", h - p_y)
-    .attr("y2", h - p_y + 5)
+    .attr("y1", y(min))
+    .attr("y2", y(min) + 5)
     .attr("class", "axisGroup");
 
   // y axis tick marks
@@ -128,7 +129,7 @@ function createLineGraph(name, values, timeDomain) {
     .data(x.ticks(xTicksNum))
   .enter().append("svg:text")
     .text(x.tickFormat(3))
-    .attr("y", h - p_y + 10)
+    .attr("y", y(min) + 10)
     .attr("x", x)
     .attr("dy", ".35em")
     .attr("text-anchor", "middle");
@@ -148,7 +149,6 @@ function createLineGraph(name, values, timeDomain) {
   // Add data to line
   dataLine.append("svg:path")
     .attr("d", line(values))
-    .attr("stroke", "#1f77b4")
     .attr("class", "variable");
   // Add title to line
   dataLine.append("svg:title")
