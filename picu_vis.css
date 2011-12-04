@@ -26,7 +26,7 @@ body {
 }
 
 .point {
-	fill: transparent;
+	fill: white;
 	stroke-width: 2;
 	stroke: black;
 }
