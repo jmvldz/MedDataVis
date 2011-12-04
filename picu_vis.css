@@ -1,0 +1,8 @@
+path.variable {
+	stroke-width: 1;
+	fill: transparent;
+}
+
+svg.chart {
+	border: 1px solid black;
+}
