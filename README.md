@@ -1,5 +1,7 @@
 MedDataVis Project - Visualize medical data
 
+parse_json.py exports patient data in a d3-friendly format
+
 parse.py: parse the physiologic data and output CSV files of temperature data
 
 temp_sparkline.html: D3 script to display sparkline of temperature data

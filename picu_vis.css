@@ -3,6 +3,16 @@ path.variable {
 	fill: transparent;
 }
 
+
+/*=============== Charts ==============*/
+
+ul#charts {
+	list-style-type: none;
+	margin: 0;
+	padding:; 0;
+}
+
+
 svg.chart {
 	border: 1px solid black;
 }
