@@ -13,9 +13,11 @@ d3.json("patient_data.json", function(json) {
   data = json;
 
   var temperatureValues = data["Temp Value"];
+  var sa02 = data["SaO2 (monitor)"];
 
   // Easily modified to iterate over each array
   createLineGraph("Temperatures", temperatureValues);
+  createLineGraph("SaO2 (Monitor)", sa02);
 
 });
 
@@ -47,7 +49,8 @@ function createLineGraph(name, values) {
 
   // Create visualization
   var vis = d3.select("#sparkline")
-                    .append("svg:svg")
+                    .append("div")
+                    .append("svg:svg").attr("class", "chart")
                     .attr("height", h)
                     .attr("width", w);
 
