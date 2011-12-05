@@ -188,7 +188,8 @@ function createInterventionPlot(interventionValues, interventionNames, timeDomai
       fill = d3.scale.category10(),
       x = d3.time.scale().domain(timeDomain).range([p_x, w - p_x]),
       y = d3.scale.ordinal().domain(interventionNames)
-        .rangePoints([h - p_y, p_y], p_ordinal);
+        .rangePoints([h - p_y, p_y], p_ordinal),
+      xAxis = d3.svg.axis().scale(x).ticks(xTicksNum).tickSize(5);
 
   var chart = d3.select("#charts")
                       .append("li")
@@ -229,14 +230,11 @@ function createInterventionPlot(interventionValues, interventionNames, timeDomai
     .attr("dy", ".35em")
     .attr("class", "text.oLabel");
 
-  // x tick text
-  axisGroup.selectAll("text.yLabels")
-    .data(x.ticks(xTicksNum))
-  .enter().append("svg:text")
-    .text(x.tickFormat(3))
-    .attr("y", y(interventionNames[0]) + 20)
-    .attr("x", x)
-    .attr("dy", ".35em")
+  // X axis - Using xAxis callback
+  axisGroup.append("svg:g")
+    .attr("class", "xAxis")
+    .attr("transform", "translate(0," + (h - p_x) + ")")
+    .call(xAxis);
 }
 
 // Enables dragging of charts

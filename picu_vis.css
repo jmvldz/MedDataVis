@@ -22,7 +22,14 @@ body {
 }
 
 .axisGroup {
-    stroke: black;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+
+.xAxis path, .xAxis line {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
 }
 
 .point {
