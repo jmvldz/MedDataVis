@@ -195,6 +195,8 @@ function createInterventionPlot(interventionValues, interventionNames, timeDomai
                       .append("li")
                       .append("div");
 
+  var name = "Intervention Data";
+
   // Add chart name
   chart.append("p")
       .html(name);
