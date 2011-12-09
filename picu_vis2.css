@@ -1,0 +1,70 @@
+body {
+  font: 10px sans-serif;
+  margin: 0;
+}
+
+ul#charts {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+path.line {
+  fill: none;
+  stroke: #1f77b4;
+  stroke-width: 3px;
+}
+
+path.area {
+/*  fill: #e7e7e7; */
+  fill: #fff; 
+}
+
+.axis {
+  shape-rendering: crispEdges;
+}
+
+.x.axis line {
+/*  stroke: #fff; */
+stroke: #E0E0E0;
+}
+
+.x.axis .minor {
+  stroke-opacity: .5;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.x.constant line {
+  stroke: #fff;
+}
+
+.x.constant .minor {
+  stroke-opacity: .5;
+}
+
+.x.constant path {
+  display: none;
+}
+
+.y.axis line, .y.axis path {
+  fill: none;
+  stroke: #000;
+}
+
+.context {
+  stroke: black;
+  stroke-width: 1px;
+}
+
+.xAxis path, .xAxis line {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges;
+}
+
+#charts li {
+  cursor: move;
+}

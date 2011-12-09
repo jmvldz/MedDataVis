@@ -1,98 +1,3 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js?2.0.0"></script>
-    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.csv.js?2.0.0"></script>
-    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.time.js?2.0.0"></script>
-    <style type="text/css">
-
-body {
-  font: 10px sans-serif;
-  margin: 0;
-}
-
-ul#charts {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
-path.line {
-  fill: none;
-  stroke: #1f77b4;
-  stroke-width: 3px;
-}
-
-path.area {
-/*  fill: #e7e7e7; */
-  fill: #fff; 
-}
-
-.axis {
-  shape-rendering: crispEdges;
-}
-
-.x.axis line {
-/*  stroke: #fff; */
-stroke: #E0E0E0;
-}
-
-.x.axis .minor {
-  stroke-opacity: .5;
-}
-
-.x.axis path {
-  display: none;
-}
-
-.x.constant line {
-  stroke: #fff;
-}
-
-.x.constant .minor {
-  stroke-opacity: .5;
-}
-
-.x.constant path {
-  display: none;
-}
-
-.y.axis line, .y.axis path {
-  fill: none;
-  stroke: #000;
-}
-
-.context {
-  stroke: black;
-  stroke-width: 1px;
-}
-
-
-
-
-.xAxis path, .xAxis line {
-  fill: none;
-  stroke: black;
-  shape-rendering: crispEdges;
-}
-
-
-
-
-
-
-
-
-
-    </style>
-  </head>
-  <body>
-
-    <div id="timeline"></div>
-    <ul id="charts"></ul>
-
-    <script type="text/javascript">
-
 var m = [80, 80, 80, 80],
     w = 960 - m[1] - m[3],
     h = 300 - m[0] - m[2],
@@ -377,6 +282,8 @@ function brushend() {
   // svg.classed("selecting", !d3.event.target.empty());
 }
 
-    </script>
-  </body>
-</html>
+// Enables dragging of charts
+$(function() {
+  $("#charts").sortable();
+  $("#charts").disableSelection();
+});
