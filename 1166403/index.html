@@ -72,10 +72,10 @@ var m = [80, 80, 80, 80],
 
 // Scales and axes. Note the inverted domain for the y-scale: bigger is up!
 var x = d3.time.scale().range([0, w]),
-    x_constant = d3.time.scale().range([0, w]),
+    xConstant = d3.time.scale().range([0, w]),
     y = d3.scale.linear().range([h, 0]),
     xAxis = d3.svg.axis().scale(x).tickSize(-h).tickSubdivide(false),
-    // xConstantAxis = d3.svg.axis().scale(x_constant).tickSize(-h).tickSubdivide(false),
+    // xConstantAxis = d3.svg.axis().scale(xConstant).tickSize(-h).tickSubdivide(false),
     yAxis = d3.svg.axis().scale(y).ticks(4).orient("right");
 
 // An area generator, for the light fill.
@@ -91,12 +91,32 @@ var line = d3.svg.line()
     .x(function(d) { return x(d.time); })
     .y(function(d) { return y(d.value); });
 
+
+function sortDates(a, b)
+{
+    return a.getTime() - b.getTime();
+}
+
 d3.json("patient_data.json", function(json) {
 
-  // Filter to one symbol; the S&P 500.
-  // var values = data.filter(function(d) {
-  //   return d.symbol == "S&P 500";
-  // });
+  data = json;
+
+  // Parse the time values into date objects
+  var timeFormat = d3.time.format("%Y-%m-%dT%H:%M:%SZ");
+  var times = [];
+  for(var variable in data) {
+      for(var row in variable) {
+        if (data[variable][row]) {
+          times.push(timeFormat.parse(data[variable][row].time));
+        }
+      }
+  }
+
+  // Get min and max date
+  var sorted = times.sort(sortDates);
+  var timeDomain = [sorted[0], sorted[sorted.length - 1]];
+
+
 
   var values = json["HR"];
   console.log(values);
@@ -110,7 +130,9 @@ d3.json("patient_data.json", function(json) {
 
   // Compute the minimum and maximum date, and the maximum value.
   x.domain([values[0].time, values[values.length - 1].time]);
-  x_constant.domain([values[0].time, values[values.length - 1].time]);
+  // xConstant.domain([values[0].time, values[values.length - 1].time]);
+  xConstant.domain(timeDomain);
+
   y.domain([0, d3.max(values, function(d) { return d.value; })]).nice();
 
   // Add an SVG element with the desired dimensions and margin.
@@ -121,6 +143,11 @@ d3.json("patient_data.json", function(json) {
   var svg = svg_0
     .append("svg:g")
       .attr("transform", "translate(" + m[3] + "," + (m[0] + h0) + ")");
+
+
+  drawTimeline(svg_0, xConstant, values, svg);
+
+
 
   // Add the clip path.
   svg.append("svg:clipPath")
@@ -160,28 +187,12 @@ d3.json("patient_data.json", function(json) {
       .attr("text-anchor", "end")
       .text(values[0].symbol);
 
-  // svg.append("g")
-  //   .attr("class", "brush")
-  //   .call(d3.svg.brush().x(x)
-  //   .on("brushstart", brushstart)
-  //   .on("brush", brush)
-  //   .on("brushend", brushend))
-  // .selectAll("rect")
-  //   .attr("height", h);
 
-  // // On click, update the x-axis.
-  // svg.on("click", function() {
-  //   var n = values.length - 1,
-  //       i = Math.floor(Math.random() * n / 2),
-  //       j = i + Math.floor(Math.random() * n / 2) + 1;
-  //   x.domain([values[i].time, values[j].time]);
-  //   var t = svg.transition().duration(750);
-  //   t.select(".x.axis").call(xAxis);
-  //   t.select(".area").attr("d", area(values));
-  //   t.select(".line").attr("d", line(values));
-  // });
 
-  var context = svg_0.append("g")
+});
+
+function drawTimeline(svg_0, xConstant, values, svg) {
+    var context = svg_0.append("g")
     .attr("transform", "translate(" + m[3] + "," + m[0] + ")")
     .attr("class", "context");
 
@@ -202,7 +213,7 @@ d3.json("patient_data.json", function(json) {
   // Time selector rectangle within context view
   context.append("g")
     .attr("class", "brush")
-    .call(d3.svg.brush().x(x_constant)
+    .call(d3.svg.brush().x(xConstant)
     .on("brushstart", brushstart)
     .on("brush", function() {
         var s = d3.event.target.extent();
@@ -219,7 +230,8 @@ d3.json("patient_data.json", function(json) {
   .selectAll("rect")
     .attr("height", 50);
 
-});
+}
+
 
 function brushstart() {
   // svg.classed("selecting", true);
