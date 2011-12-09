@@ -112,189 +112,41 @@ var line = d3.svg.line()
     .y(function(d) { return y(d.value); });
 
 
+// List to keep track of charts
+chart_data = [];
+
 d3.json("patient_data.json", function(json) {
 
   timeDomain = getTotalTimeOfStay(json);
 
+  drawTimeline2(timeDomain);
 
-  var values = json["HR"];
-  console.log(values);
-
-  // Parse dates and numbers. We assume values are sorted by date.
-  values.forEach(function(d) {
-    d.time = parse(d.time);
-    d.value = +d.value;
-    d.symbol = "Heart Rate";
-  });
-
-
-
-
-  x.domain(timeDomain);
-
-
-  y.domain([0, d3.max(values, function(d) { return d.value; })]).nice();
-
-  // Add an SVG element with the desired dimensions and margin.
-  var svg_0 = d3.select("body").append("svg:svg");
-      // .attr("width", w + m[1] + m[3])
-      // .attr("height", h + m[0] + m[2] + h0);
-
-  var charts = d3.select("#charts");
-
-  var timeline = d3.select("#timeline")
-    .append("svg:svg")
-    .attr("height", 50)
-    .attr("width", w)
-  // var timeline = svg_0
-    .append("svg:g")
-    // .attr("transform", "translate(" + m[3] + "," + m[0] + ")")
-    .attr("class", "context");
-
-  // var svg = svg_0
-  //   .append("svg:g")
-  //     .attr("transform", "translate(" + m[3] + "," + (m[0] + h0) + ")");
-
-  var svg = charts.append("li").append("div").append("svg:svg").attr("height", h+30) // room for the axis, make a constant later
-    .attr("width", w+m[1])
-    .append("svg:g");
-   
-
-  svg1 = svg;
-
-
-  var values2 = json["Temp Value"];
-  values2.forEach(function(d) {
-    d.time = parse(d.time);
-    d.value = +d.value;
-    d.symbol = "Temperature";
-  });
-
-
-  drawTimeline(svg_0, timeDomain, values, values2, timeline, svg);
-
-
-
-  // Add the clip path.
-  svg.append("svg:clipPath")
-      .attr("id", "clip")
-    .append("svg:rect")
-      .attr("width", w)
-      .attr("height", h);
-
-  // Add the area path.
-  svg.append("svg:path")
-      .attr("class", "area area_heartrate")
-      .attr("clip-path", "url(#clip)")
-      .attr("d", area(values));
-
-  // Add the x-axis.
-  svg.append("svg:g")
-      .attr("class", "x axis x_heartrate")
-      .attr("transform", "translate(0," + h + ")")
-      .call(xAxis);
-
-  // Add the y-axis.
-  svg.append("svg:g")
-      .attr("class", "y axis")
-      .attr("transform", "translate(" + w + ",0)")
-      .call(yAxis);
-
-  // Add the line path.
-  svg.append("svg:path")
-      .attr("class", "line line_heartrate")
-      .attr("clip-path", "url(#clip)")
-      .attr("d", line(values));
-
-  // Add a small label for the symbol name.
-  svg.append("svg:text")
-      .attr("x", w - 6)
-      .attr("y", h - 6)
-      .attr("text-anchor", "end")
-      .text(values[0].symbol);
-
-
-
-
-
-
-
-
-
-
-  // var svg = svg_0
-  //   .append("svg:g")
-  //     .attr("transform", "translate(" + m[3] + "," + (m[0] + h0 + 250) + ")");
-
-    // var svg = charts.append("li").append("div").append("svg:svg")
-    // .append("svg:g");
-
-  var svg = charts.append("li").append("div").append("svg:svg").attr("height", h+m[0])
-    .attr("width", w+m[1])
-    .append("svg:g");
-
-      svg2 = svg;
-
-  // Add the clip path.
-  svg.append("svg:clipPath")
-      .attr("id", "clip")
-    .append("svg:rect")
-      .attr("width", w)
-      .attr("height", h);
-
-  // Add the area path.
-  svg.append("svg:path")
-      .attr("class", "area area_temp")
-      .attr("clip-path", "url(#clip)")
-      .attr("d", area(values2));
-
-  // Add the x-axis.
-  svg.append("svg:g")
-      .attr("class", "x axis x_temp")
-      .attr("transform", "translate(0," + h + ")")
-      .call(xAxis);
-
-  // Add the y-axis.
-  svg.append("svg:g")
-      .attr("class", "y axis")
-      .attr("transform", "translate(" + w + ",0)")
-      .call(yAxis);
-
-  // Add the line path.
-  svg.append("svg:path")
-      .attr("class", "line line_temp")
-      .attr("clip-path", "url(#clip)")
-      .attr("d", line(values2));
-
-  // Add a small label for the symbol name.
-  svg.append("svg:text")
-      .attr("x", w - 6)
-      .attr("y", h - 6)
-      .attr("text-anchor", "end")
-      .text(values2[0].symbol);
-
-
-
-
-
-
-
-
+  drawChart("Heart Rate", json["HR"]);
+  drawChart("Temperature", json["Temp Value"]);
+  drawChart("SaO2 (Monitor)", json["SaO2 (monitor)"]);
 
 });
 
-function drawTimeline(svg_0, timeDomain, values, values2, context, svg) {
+
+function drawTimeline2(timeDomain) {
+
+  var h = 50;
+
+  // create svg for the timeline
+  var context = d3.select("#timeline")
+    .append("svg:svg")
+    .attr("height", 50)
+    .attr("width", w)
+    .append("svg:g")
+    .attr("class", "context");
 
   // X-axis for timeline
   xConstant.domain(timeDomain);
 
-  var h = 50;
-
-
   // Context view.
   context.append("rect")
       .attr("width", w)
-      .attr("height", 50)
+      .attr("height", h)
       .attr("fill", "none")
       .attr("pointer-events", "all")
       .attr("cursor", "crosshair");
@@ -311,30 +163,92 @@ function drawTimeline(svg_0, timeDomain, values, values2, context, svg) {
     .call(d3.svg.brush().x(xConstant)
     .on("brushstart", brushstart)
     .on("brush", function() {
+
+        // set x axis to time chosen by user
         var s = d3.event.target.extent();
         var start = s[0];
         var end = s[1];
-
         x.domain([start, end]);
-        var t = svg1.transition().duration(1);
-        t.select(".x_heartrate").call(xAxis);
-        t.select(".area_heartrate").attr("d", area(values));
-        t.select(".line_heartrate").attr("d", line(values));
 
-
-        var t = svg2.transition().duration(1);
-
-        t.select(".x_temp").call(xAxis);
-        t.select(".area_temp").attr("d", area(values2));
-        t.select(".line_temp").attr("d", line(values2));
+        // adjust each chart to the new time range
+        for (i = 0; i < chart_data.length; i++) {
+          var t = d3.select(".chart"+i).transition().duration(1);
+          y.domain([0, d3.max(chart_data[i], function(d) { return d.value; })]).nice();
+          t.select(".x_"+i).call(xAxis);
+          t.select(".area_"+i).attr("d", area(chart_data[i]));
+          t.select(".line_"+i).attr("d", line(chart_data[i]));
+        }
     })
     .on("brushend", brushend))
   .selectAll("rect")
-    .attr("height", 50);
+    .attr("height", h);
 
 }
 
+function drawChart(name, values) {
 
+  // Load data
+  values.forEach(function(d) {
+    d.time = parse(d.time);
+    d.value = +d.value;
+    d.symbol = name;
+  });
+
+  // Grab index and store data for resizing charts later
+  var index = chart_data.length;
+  chart_data.push(values);
+
+  // set x and y
+  x.domain(timeDomain);
+  y.domain([0, d3.max(values, function(d) { return d.value; })]).nice();
+
+  var svg = d3.select("#charts")
+    .append("li")
+    .append("div")
+    .append("svg:svg")
+    .attr("class", "chart" + index)
+    .attr("height", h+30) // room for the axis, make a constant later
+    .attr("width", w+m[1])
+    .append("svg:g");
+
+  // Add the clip path.
+  svg.append("svg:clipPath")
+      .attr("id", "clip")
+    .append("svg:rect")
+      .attr("width", w)
+      .attr("height", h);
+
+  // Add the area path.
+  svg.append("svg:path")
+      .attr("class", "area " + "area_" + index)
+      .attr("clip-path", "url(#clip)")
+      .attr("d", area(values));
+
+  // Add the x-axis.
+  svg.append("svg:g")
+      .attr("class", "x axis " + "x_" + index)
+      .attr("transform", "translate(0," + h + ")")
+      .call(xAxis);
+
+  // Add the y-axis.
+  svg.append("svg:g")
+      .attr("class", "y axis")
+      .attr("transform", "translate(" + w + ",0)")
+      .call(yAxis);
+
+  // Add the line path.
+  svg.append("svg:path")
+      .attr("class", "line " + "line_" + index)
+      .attr("clip-path", "url(#clip)")
+      .attr("d", line(values));
+
+  // Add a small label for the symbol name.
+  svg.append("svg:text")
+      .attr("x", w - 6)
+      .attr("y", h - 6)
+      .attr("text-anchor", "end")
+      .text(values[0].symbol);
+}
 
 function sortDates(a, b)
 {
