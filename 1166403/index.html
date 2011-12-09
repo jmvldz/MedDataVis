@@ -21,6 +21,16 @@ path.area {
   fill: #e7e7e7;
 }
 
+path.line2 {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;
+}
+
+path.area2 {
+  fill: #e7e7e7;
+}
+
 .axis {
   shape-rendering: crispEdges;
 }
@@ -34,6 +44,18 @@ path.area {
 }
 
 .x.axis path {
+  display: none;
+}
+
+.x.axis2 line {
+  stroke: #fff;
+}
+
+.x.axis2 .minor {
+  stroke-opacity: .5;
+}
+
+.x.axis2 path {
   display: none;
 }
 
@@ -92,19 +114,9 @@ var line = d3.svg.line()
     .y(function(d) { return y(d.value); });
 
 
-function sortDates(a, b)
-{
-    return a.getTime() - b.getTime();
-}
-
 d3.json("patient_data.json", function(json) {
 
   timeDomain = getTotalTimeOfStay(json);
-
-
-
-
-
 
 
   var values = json["HR"];
@@ -117,24 +129,33 @@ d3.json("patient_data.json", function(json) {
     d.symbol = "Heart Rate";
   });
 
-  // Compute the minimum and maximum date, and the maximum value.
-  x.domain([values[0].time, values[values.length - 1].time]);
-  // xConstant.domain([values[0].time, values[values.length - 1].time]);
-  xConstant.domain(timeDomain);
+
+
+
+  x.domain(timeDomain);
+
 
   y.domain([0, d3.max(values, function(d) { return d.value; })]).nice();
 
   // Add an SVG element with the desired dimensions and margin.
-  var svg_0 = d3.select("body").append("svg:svg")
-      .attr("width", w + m[1] + m[3])
-      .attr("height", h + m[0] + m[2] + h0);
+  var svg_0 = d3.select("body").append("svg:svg");
+      // .attr("width", w + m[1] + m[3])
+      // .attr("height", h + m[0] + m[2] + h0);
 
   var svg = svg_0
     .append("svg:g")
       .attr("transform", "translate(" + m[3] + "," + (m[0] + h0) + ")");
 
 
-  drawTimeline(svg_0, xConstant, values, svg);
+  var values2 = json["Temp Value"];
+  values2.forEach(function(d) {
+    d.time = parse(d.time);
+    d.value = +d.value;
+    d.symbol = "Temperature";
+  });
+
+
+  drawTimeline(svg_0, timeDomain, values, values2, svg);
 
 
 
@@ -178,9 +199,69 @@ d3.json("patient_data.json", function(json) {
 
 
 
+
+
+
+
+
+
+
+  var svg = svg_0
+    .append("svg:g")
+      .attr("transform", "translate(" + m[3] + "," + (m[0] + h0 + 250) + ")");
+
+  // Add the clip path.
+  svg.append("svg:clipPath")
+      .attr("id", "clip")
+    .append("svg:rect")
+      .attr("width", w)
+      .attr("height", h);
+
+  // Add the area path.
+  svg.append("svg:path")
+      .attr("class", "area2")
+      .attr("clip-path", "url(#clip)")
+      .attr("d", area(values2));
+
+  // Add the x-axis.
+  svg.append("svg:g")
+      .attr("class", "x axis2")
+      .attr("transform", "translate(0," + h + ")")
+      .call(xAxis);
+
+  // Add the y-axis.
+  svg.append("svg:g")
+      .attr("class", "y axis")
+      .attr("transform", "translate(" + w + ",0)")
+      .call(yAxis);
+
+  // Add the line path.
+  svg.append("svg:path")
+      .attr("class", "line2")
+      .attr("clip-path", "url(#clip)")
+      .attr("d", line(values2));
+
+  // Add a small label for the symbol name.
+  svg.append("svg:text")
+      .attr("x", w - 6)
+      .attr("y", h - 6)
+      .attr("text-anchor", "end")
+      .text(values2[0].symbol);
+
+
+
+
+
+
+
+
+
 });
 
-function drawTimeline(svg_0, xConstant, values, svg) {
+function drawTimeline(svg_0, timeDomain, values, values2, svg) {
+
+  xConstant.domain(timeDomain);
+
     var context = svg_0.append("g")
     .attr("transform", "translate(" + m[3] + "," + m[0] + ")")
     .attr("class", "context");
@@ -210,15 +291,26 @@ function drawTimeline(svg_0, xConstant, values, svg) {
         var end = s[1];
 
         x.domain([start, end]);
-        var t = svg.transition().duration(1);
+        var t = svg_0.transition().duration(1);
         t.select(".x.axis").call(xAxis);
         t.select(".area").attr("d", area(values));
         t.select(".line").attr("d", line(values));
+
+        t.select(".x.axis2").call(xAxis);
+        t.select(".area2").attr("d", area(values2));
+        t.select(".line2").attr("d", line(values2));
     })
     .on("brushend", brushend))
   .selectAll("rect")
     .attr("height", 50);
 
+}
+
+
+
+function sortDates(a, b)
+{
+    return a.getTime() - b.getTime();
 }
 
 // Returns the earliest and latest date for
