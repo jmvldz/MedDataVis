@@ -11,6 +11,12 @@ body {
   margin: 0;
 }
 
+ul#charts {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
 path.line {
   fill: none;
   stroke: #666;
@@ -47,18 +53,6 @@ path.area2 {
   display: none;
 }
 
-.x.axis2 line {
-  stroke: #fff;
-}
-
-.x.axis2 .minor {
-  stroke-opacity: .5;
-}
-
-.x.axis2 path {
-  display: none;
-}
-
 .x.constant line {
   stroke: #fff;
 }
@@ -84,11 +78,15 @@ path.area2 {
     </style>
   </head>
   <body>
+
+    <div id="timeline"></div>
+    <ul id="charts"></ul>
+
     <script type="text/javascript">
 
 var m = [80, 80, 80, 80],
     w = 960 - m[1] - m[3],
-    h = 500 - m[0] - m[2],
+    h = 300 - m[0] - m[2],
     h0 = m[0];
     parse = d3.time.format("%Y-%m-%dT%H:%M:%SZ").parse;
 
@@ -142,9 +140,27 @@ d3.json("patient_data.json", function(json) {
       // .attr("width", w + m[1] + m[3])
       // .attr("height", h + m[0] + m[2] + h0);
 
-  var svg = svg_0
+  var charts = d3.select("#charts");
+
+  var timeline = d3.select("#timeline")
+    .append("svg:svg")
+    .attr("height", 50)
+    .attr("width", w)
+  // var timeline = svg_0
     .append("svg:g")
-      .attr("transform", "translate(" + m[3] + "," + (m[0] + h0) + ")");
+    // .attr("transform", "translate(" + m[3] + "," + m[0] + ")")
+    .attr("class", "context");
+
+  // var svg = svg_0
+  //   .append("svg:g")
+  //     .attr("transform", "translate(" + m[3] + "," + (m[0] + h0) + ")");
+
+  var svg = charts.append("li").append("div").append("svg:svg").attr("height", h+30) // room for the axis, make a constant later
+    .attr("width", w+m[1])
+    .append("svg:g");
+   
+
+  svg1 = svg;
 
 
   var values2 = json["Temp Value"];
@@ -155,7 +171,7 @@ d3.json("patient_data.json", function(json) {
   });
 
 
-  drawTimeline(svg_0, timeDomain, values, values2, svg);
+  drawTimeline(svg_0, timeDomain, values, values2, timeline, svg);
 
 
 
@@ -168,13 +184,13 @@ d3.json("patient_data.json", function(json) {
 
   // Add the area path.
   svg.append("svg:path")
-      .attr("class", "area")
+      .attr("class", "area area_heartrate")
       .attr("clip-path", "url(#clip)")
       .attr("d", area(values));
 
   // Add the x-axis.
   svg.append("svg:g")
-      .attr("class", "x axis")
+      .attr("class", "x axis x_heartrate")
       .attr("transform", "translate(0," + h + ")")
       .call(xAxis);
 
@@ -186,7 +202,7 @@ d3.json("patient_data.json", function(json) {
 
   // Add the line path.
   svg.append("svg:path")
-      .attr("class", "line")
+      .attr("class", "line line_heartrate")
       .attr("clip-path", "url(#clip)")
       .attr("d", line(values));
 
@@ -206,9 +222,18 @@ d3.json("patient_data.json", function(json) {
 
 
 
-  var svg = svg_0
-    .append("svg:g")
-      .attr("transform", "translate(" + m[3] + "," + (m[0] + h0 + 250) + ")");
+  // var svg = svg_0
+  //   .append("svg:g")
+  //     .attr("transform", "translate(" + m[3] + "," + (m[0] + h0 + 250) + ")");
+
+    // var svg = charts.append("li").append("div").append("svg:svg")
+    // .append("svg:g");
+
+  var svg = charts.append("li").append("div").append("svg:svg").attr("height", h+m[0])
+    .attr("width", w+m[1])
+    .append("svg:g");
+
+      svg2 = svg;
 
   // Add the clip path.
   svg.append("svg:clipPath")
@@ -219,13 +244,13 @@ d3.json("patient_data.json", function(json) {
 
   // Add the area path.
   svg.append("svg:path")
-      .attr("class", "area2")
+      .attr("class", "area area_temp")
       .attr("clip-path", "url(#clip)")
       .attr("d", area(values2));
 
   // Add the x-axis.
   svg.append("svg:g")
-      .attr("class", "x axis2")
+      .attr("class", "x axis x_temp")
       .attr("transform", "translate(0," + h + ")")
       .call(xAxis);
 
@@ -237,7 +262,7 @@ d3.json("patient_data.json", function(json) {
 
   // Add the line path.
   svg.append("svg:path")
-      .attr("class", "line2")
+      .attr("class", "line line_temp")
       .attr("clip-path", "url(#clip)")
       .attr("d", line(values2));
 
@@ -258,13 +283,13 @@ d3.json("patient_data.json", function(json) {
 
 });
 
-function drawTimeline(svg_0, timeDomain, values, values2, svg) {
+function drawTimeline(svg_0, timeDomain, values, values2, context, svg) {
 
+  // X-axis for timeline
   xConstant.domain(timeDomain);
 
-    var context = svg_0.append("g")
-    .attr("transform", "translate(" + m[3] + "," + m[0] + ")")
-    .attr("class", "context");
+  var h = 50;
+
 
   // Context view.
   context.append("rect")
@@ -291,14 +316,17 @@ function drawTimeline(svg_0, timeDomain, values, values2, svg) {
         var end = s[1];
 
         x.domain([start, end]);
-        var t = svg_0.transition().duration(1);
-        t.select(".x.axis").call(xAxis);
-        t.select(".area").attr("d", area(values));
-        t.select(".line").attr("d", line(values));
+        var t = svg1.transition().duration(1);
+        t.select(".x_heartrate").call(xAxis);
+        t.select(".area_heartrate").attr("d", area(values));
+        t.select(".line_heartrate").attr("d", line(values));
 
-        t.select(".x.axis2").call(xAxis);
-        t.select(".area2").attr("d", area(values2));
-        t.select(".line2").attr("d", line(values2));
+
+        var t = svg2.transition().duration(1);
+
+        t.select(".x_temp").call(xAxis);
+        t.select(".area_temp").attr("d", area(values2));
+        t.select(".line_temp").attr("d", line(values2));
     })
     .on("brushend", brushend))
   .selectAll("rect")
