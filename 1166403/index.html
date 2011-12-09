@@ -193,11 +193,13 @@ d3.json("patient_data.json", function(json) {
       .attr("pointer-events", "all")
       .attr("cursor", "crosshair");
 
+  // Context view x axis
   context.append("svg:g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + h + ")");
       // .call(xConstantAxis);
 
+  // Time selector rectangle within context view
   context.append("g")
     .attr("class", "brush")
     .call(d3.svg.brush().x(x_constant)
@@ -208,7 +210,7 @@ d3.json("patient_data.json", function(json) {
         var end = s[1];
 
         x.domain([start, end]);
-        var t = svg.transition().duration(750);
+        var t = svg.transition().duration(1);
         t.select(".x.axis").call(xAxis);
         t.select(".area").attr("d", area(values));
         t.select(".line").attr("d", line(values));
