@@ -99,22 +99,11 @@ function sortDates(a, b)
 
 d3.json("patient_data.json", function(json) {
 
-  data = json;
+  timeDomain = getTotalTimeOfStay(json);
 
-  // Parse the time values into date objects
-  var timeFormat = d3.time.format("%Y-%m-%dT%H:%M:%SZ");
-  var times = [];
-  for(var variable in data) {
-      for(var row in variable) {
-        if (data[variable][row]) {
-          times.push(timeFormat.parse(data[variable][row].time));
-        }
-      }
-  }
 
-  // Get min and max date
-  var sorted = times.sort(sortDates);
-  var timeDomain = [sorted[0], sorted[sorted.length - 1]];
+
+
 
 
 
@@ -232,6 +221,24 @@ function drawTimeline(svg_0, xConstant, values, svg) {
 
 }
 
+// Returns the earliest and latest date for
+// patient information
+function getTotalTimeOfStay(data) {
+    // Parse the time values into date objects
+  var timeFormat = d3.time.format("%Y-%m-%dT%H:%M:%SZ");
+  var times = [];
+  for(var variable in data) {
+      for(var row in variable) {
+        if (data[variable][row]) {
+          times.push(timeFormat.parse(data[variable][row].time));
+        }
+      }
+  }
+
+  // Get min and max date
+  var sorted = times.sort(sortDates);
+  return([sorted[0], sorted[sorted.length - 1]]);
+}
 
 function brushstart() {
   // svg.classed("selecting", true);
