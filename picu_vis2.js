@@ -68,6 +68,7 @@ d3.json("patient_data.json", function(json) {
 
 });
 
+// Appends the graph or hides it on checkbox click
 function toggleGraphOnClick() {
   var graphName = $(this).attr("name");
   var graph = $('#' + graphName);
@@ -75,7 +76,8 @@ function toggleGraphOnClick() {
     graph.toggle('slow');
   }
   else {
-    drawChart(graphName, graphName, data[graphName], timeDomain);
+    var dataName = data_names[graphName];
+    drawChart(dataName, dataName, data[dataName], timeDomain);
   }
 }
 
@@ -320,12 +322,12 @@ function brushend() {
 
 // Remove spaces
 function removeSpaces(str) {
-  return str.replace(/ /, '');
+  return str.replace(/ /g, '');
 }
 
 // Remove quotes
 function removeQuotes(str) {
-  return str.replace(/"/, '');
+  return str.replace(/"/g, '');
 }
 
 // Remove parents
