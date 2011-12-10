@@ -25,7 +25,6 @@ var line = d3.svg.line()
     .x(function(d) { return x(d.time); })
     .y(function(d) { return y(d.value); });
 
-
 // List to keep track of charts
 chart_data = [];
 
@@ -36,9 +35,19 @@ d3.json("patient_data.json", function(json) {
   // Draw timeline
   drawTimeline(timeDomain);
 
-  drawChart("Heart Rate", json["HR"], timeDomain);
-  drawChart("Temperature", json["Temp Value"], timeDomain);
-  drawChart("SaO2 (Monitor)", json["SaO2 (monitor)"], timeDomain);
+  // Adds text boxes for variable names
+  addVariableCheckBoxes(json);
+
+  // Allows toggling the graph on and off
+  $('input#variable').click(function () {
+    var graphName = $(this).attr("name");
+    $('#' + graphName).toggle("slow");
+  });
+
+  // Draw charts
+  drawChart("Heart Rate", "HR", json["HR"], timeDomain);
+  drawChart("Temperature", "Temp Value", json["Temp Value"], timeDomain);
+  drawChart("SaO2 (Monitor)", "SaO2 (monitor)", json["SaO2 (monitor)"], timeDomain);
 
   // Graph intervention data
   var interventionData = [];
@@ -52,8 +61,6 @@ d3.json("patient_data.json", function(json) {
   createInterventionPlot(interventionData, interventionNames, timeDomain);
 
 });
-
-
 
 function drawTimeline(timeDomain) {
 
@@ -112,13 +119,19 @@ function drawTimeline(timeDomain) {
 
 }
 
-function drawChart(name, values, timeDomain) {
+function drawChart(readableName, dataName, values, timeDomain) {
+
+  dataName = removeSpaces(dataName);
+  dataName = removeParens(dataName);
+
+  // Set check box to checked
+  $('input#variable[name=' + dataName + ']').attr('checked', true);
 
   // Load data
   values.forEach(function(d) {
     d.time = parse(d.time);
     d.value = +d.value;
-    d.symbol = name;
+    d.symbol = readableName;
   });
 
   // Grab index and store data for resizing charts later
@@ -131,6 +144,7 @@ function drawChart(name, values, timeDomain) {
 
   var svg = d3.select("#charts")
     .append("li")
+      .attr("id", dataName)
     .append("div")
     .append("svg:svg")
     .attr("class", "chart" + index)
@@ -282,8 +296,46 @@ function brushend() {
   // svg.classed("selecting", !d3.event.target.empty());
 }
 
+// Remove spaces
+function removeSpaces(str) {
+  return str.replace(/ /, '');
+}
+
+// Remove quotes
+function removeQuotes(str) {
+  return str.replace(/"/, '');
+}
+
+// Remove parents
+function removeParens(str) {
+  return str.replace(/[()]/g, '');
+}
+
 // Enables dragging of charts
 $(function() {
   $("#charts").sortable();
   $("#charts").disableSelection();
 });
+
+// Append a check box for each variable in data
+function addVariableCheckBoxes(data) {
+  var variableList = $(".variable-selection");
+
+  for(var variable in data) {
+    addCheckBox(variableList, variable);
+  }
+}
+
+function addCheckBox(variableList, variable) {
+  var variableID = removeQuotes(variable);
+  variableID = removeSpaces(variableID);
+  variableID = removeParens(variableID);
+
+  var element = '<li>';
+  element += '<input type="checkbox" name="' + variableID
+    + '" id="variable" >';
+  element += '<span>' + variable + '</span>';
+  element += '</li>';
+
+  variableList.append(element);
+}
