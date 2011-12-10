@@ -84,3 +84,8 @@ stroke: #E0E0E0;
   position: fixed;
   z-index: 1;
 }
+
+.background {
+  fill: #FFF;
+  visibility: visible !important;
+}
