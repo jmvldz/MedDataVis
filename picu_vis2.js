@@ -125,12 +125,25 @@ function drawTimeline(timeDomain) {
 
         // adjust each chart to the new time range
         for (i = 0; i < chart_data.length; i++) {
-          var t = d3.select(".chart"+i).transition().duration(1);
+          // var t = d3.select(".chart"+i).transition().duration(1);
+          
           y.domain([d3.min(chart_data[i], function(d) { return d.value; })*.9, 
             d3.max(chart_data[i], function(d) { return d.value; })*1.1]).nice();
-          t.select(".x_"+i).call(xAxis);
-          t.select(".area_"+i).attr("d", area(chart_data[i]));
-          t.select(".line_"+i).attr("d", line(chart_data[i]));
+
+          var chart = d3.select(".chart-area"+i);
+          chart.select(".x_"+i).call(xAxis);
+          chart.select(".area_"+i).attr("d", area(chart_data[i]));
+          chart.select(".line_"+i).attr("d", line(chart_data[i]));
+
+          chart.selectAll('.point_'+i).remove();
+          chart.selectAll('.point_'+i)
+            .data(chart_data[i])
+            .enter().append("svg:circle")
+            .attr("clip-path", "url(#clip)")
+            .attr("cx", function(d) { return x(d.time); })
+            .attr("cy", function(d) { return y(d.value); })
+            .attr("r", 3)
+            .attr("class", "point point_" + i);
         }
     })
     .on("brushend", brushend))
@@ -174,7 +187,8 @@ function drawChart(readableName, dataName, values, timeDomain) {
     .attr("height", h+30) // room for the axis, make a constant later
     .attr("width", w+30) // room for the axis, make a constant later
     .append("svg:g")
-    .attr("transform", "translate(0," + 10 + ")");
+    .attr("transform", "translate(0," + 10 + ")")
+    .attr("class", "chart-area" + index);
 
   // Add the clip path.
   svg.append("svg:clipPath")
@@ -214,13 +228,15 @@ function drawChart(readableName, dataName, values, timeDomain) {
   //     .attr("text-anchor", "end")
   //     .text(values[0].symbol);
 
+  // Add dots
   svg.selectAll('.point')
     .data(values)
   .enter().append("svg:circle")
+    .attr("clip-path", "url(#clip)")
      .attr("cx", function(d) { return x(d.time); })
      .attr("cy", function(d) { return y(d.value); })
-     .attr("r", 2)
-     .attr("class", "point");
+     .attr("r", 3)
+     .attr("class", "point point_" + index);
 }
 
 function createInterventionPlot(interventionValues, interventionNames, timeDomain) {
