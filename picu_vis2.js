@@ -48,7 +48,7 @@ d3.json("patient_data.json", function(json) {
   addVariableCheckBoxes(json);
 
   // Allows toggling the graph on and off
-  //$('input#variable').click(toggleGraphOnClick);
+  $('input#variable').click(toggleGraphOnClick);
 
   // Draw charts
   drawChart("Heart Rate", "HR", json["HR"], timeDomain);
@@ -154,8 +154,7 @@ function drawTimeline(timeDomain) {
 
 function drawChart(readableName, dataName, values, timeDomain) {
 
-  dataName = removeSpaces(dataName);
-  dataName = removeParens(dataName);
+  dataName = removeNonParsingChars(dataName);
 
   // Set check box to checked
   $('input#variable[name=' + dataName + ']').attr('checked', true);
@@ -344,19 +343,9 @@ function brushend() {
   // svg.classed("selecting", !d3.event.target.empty());
 }
 
-// Remove spaces
-function removeSpaces(str) {
-  return str.replace(/ /g, '');
-}
-
-// Remove quotes
-function removeQuotes(str) {
-  return str.replace(/"/g, '');
-}
-
 // Remove parents
-function removeParens(str) {
-  return str.replace(/[()]/g, '');
+function removeNonParsingChars(str) {
+  return str.replace(/[() "/]/g, '');
 }
 
 // Enables dragging of charts
@@ -370,15 +359,17 @@ function addVariableCheckBoxes(data) {
   var variableList = $(".variable-selection");
 
   for(var variable in data) {
-    addCheckBox(variableList, variable);
+    if(isFinite(data[variable][0].value))
+      addCheckBox(variableList, variable);
   }
+}
+
+function addCalculatedValues(calculated) {
 }
 
 // Appends a check box to the variable list for the specified variable
 function addCheckBox(variableList, variable) {
-  var variableID = removeQuotes(variable);
-  variableID = removeSpaces(variableID);
-  variableID = removeParens(variableID);
+  var variableID = removeNonParsingChars(variable);
   
   data_names[variableID] = variable;
 
@@ -390,3 +381,4 @@ function addCheckBox(variableList, variable) {
 
   variableList.append(element);
 }
+
