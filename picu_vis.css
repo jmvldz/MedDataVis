@@ -41,3 +41,8 @@ body {
 #charts li {
 	cursor: move;
 }
+
+#sidebar-selector {
+ width: 300px;
+ float: right;
+}

@@ -1,6 +1,6 @@
 var m = [80, 80, 80, 80],
     w = 960 - m[1] - m[3],
-    h = 300 - m[0] - m[2],
+    h = 250 - m[0] - m[2],
     h0 = m[0];
     parse = d3.time.format("%Y-%m-%dT%H:%M:%SZ").parse;
 
@@ -107,7 +107,8 @@ function drawTimeline(timeDomain) {
         // adjust each chart to the new time range
         for (i = 0; i < chart_data.length; i++) {
           var t = d3.select(".chart"+i).transition().duration(1);
-          y.domain([0, d3.max(chart_data[i], function(d) { return d.value; })]).nice();
+          y.domain([d3.min(chart_data[i], function(d) { return d.value; })*.9, 
+            d3.max(chart_data[i], function(d) { return d.value; })*1.1]).nice();
           t.select(".x_"+i).call(xAxis);
           t.select(".area_"+i).attr("d", area(chart_data[i]));
           t.select(".line_"+i).attr("d", line(chart_data[i]));
@@ -140,17 +141,21 @@ function drawChart(readableName, dataName, values, timeDomain) {
 
   // set x and y
   x.domain(timeDomain);
-  y.domain([0, d3.max(values, function(d) { return d.value; })]).nice();
+  y.domain([d3.min(values, function(d) { return d.value; })*.9, 
+  d3.max(values, function(d) { return d.value; })*1.1]).nice();
 
   var svg = d3.select("#charts")
     .append("li")
       .attr("id", dataName)
+    .append("p")
+      .html(name)
     .append("div")
     .append("svg:svg")
     .attr("class", "chart" + index)
     .attr("height", h+30) // room for the axis, make a constant later
-    .attr("width", w+m[1])
-    .append("svg:g");
+    .attr("width", w+30) // room for the axis, make a constant later
+    .append("svg:g")
+    .attr("transform", "translate(0," + 10 + ")");
 
   // Add the clip path.
   svg.append("svg:clipPath")
@@ -184,11 +189,11 @@ function drawChart(readableName, dataName, values, timeDomain) {
       .attr("d", line(values));
 
   // Add a small label for the symbol name.
-  svg.append("svg:text")
-      .attr("x", w - 6)
-      .attr("y", h - 6)
-      .attr("text-anchor", "end")
-      .text(values[0].symbol);
+  // svg.append("svg:text")
+  //     .attr("x", w - 6)
+  //     .attr("y", h - 6)
+  //     .attr("text-anchor", "end")
+  //     .text(values[0].symbol);
 }
 
 function createInterventionPlot(interventionValues, interventionNames, timeDomain) {
