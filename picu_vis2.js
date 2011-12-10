@@ -48,7 +48,7 @@ d3.json("patient_data.json", function(json) {
   addVariableCheckBoxes(json);
 
   // Allows toggling the graph on and off
-  $('input#variable').click(toggleGraphOnClick);
+  //$('input#variable').click(toggleGraphOnClick);
 
   // Draw charts
   drawChart("Heart Rate", "HR", json["HR"], timeDomain);
@@ -350,6 +350,7 @@ function addVariableCheckBoxes(data) {
   }
 }
 
+// Appends a check box to the variable list for the specified variable
 function addCheckBox(variableList, variable) {
   var variableID = removeQuotes(variable);
   variableID = removeSpaces(variableID);
