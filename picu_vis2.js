@@ -213,6 +213,14 @@ function drawChart(readableName, dataName, values, timeDomain) {
   //     .attr("y", h - 6)
   //     .attr("text-anchor", "end")
   //     .text(values[0].symbol);
+
+  svg.selectAll('.point')
+    .data(values)
+  .enter().append("svg:circle")
+     .attr("cx", function(d) { return x(d.time); })
+     .attr("cy", function(d) { return y(d.value); })
+     .attr("r", 2)
+     .attr("class", "point");
 }
 
 function createInterventionPlot(interventionValues, interventionNames, timeDomain) {
