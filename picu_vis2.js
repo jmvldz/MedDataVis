@@ -12,6 +12,8 @@ var x = d3.time.scale().range([0, w]),
     // xConstantAxis = d3.svg.axis().scale(xConstant).tickSize(-h).tickSubdivide(false),
     yAxis = d3.svg.axis().scale(y).ticks(4).orient("right");
 
+var timeDomain;
+
 // An area generator, for the light fill.
 var area = d3.svg.area()
     //.interpolate("monotone")
@@ -26,11 +28,18 @@ var line = d3.svg.line()
     .y(function(d) { return y(d.value); });
 
 // List to keep track of charts
-chart_data = [];
+var chart_data = [];
+// Map to keep track of actual data names
+var data_names = {};
+// Variable to keep track of data
+var data;
+
 
 d3.json("patient_data.json", function(json) {
+  // Keep track of data to add new graphs
+  data = json;
 
-  var timeDomain = getTotalTimeOfStay(json);
+  timeDomain = getTotalTimeOfStay(json);
 
   // Draw timeline
   drawTimeline(timeDomain);
@@ -39,10 +48,7 @@ d3.json("patient_data.json", function(json) {
   addVariableCheckBoxes(json);
 
   // Allows toggling the graph on and off
-  $('input#variable').click(function () {
-    var graphName = $(this).attr("name");
-    $('#' + graphName).toggle("slow");
-  });
+  $('input#variable').click(toggleGraphOnClick);
 
   // Draw charts
   drawChart("Heart Rate", "HR", json["HR"], timeDomain);
@@ -61,6 +67,17 @@ d3.json("patient_data.json", function(json) {
   createInterventionPlot(interventionData, interventionNames, timeDomain);
 
 });
+
+function toggleGraphOnClick() {
+  var graphName = $(this).attr("name");
+  var graph = $('#' + graphName);
+  if(graph.length == 1) {
+    graph.toggle('slow');
+  }
+  else {
+    drawChart(graphName, graphName, data[graphName], timeDomain);
+  }
+}
 
 function drawTimeline(timeDomain) {
 
@@ -148,7 +165,7 @@ function drawChart(readableName, dataName, values, timeDomain) {
     .append("li")
       .attr("id", dataName)
     .append("p")
-      .html(name)
+      .html(readableName)
     .append("div")
     .append("svg:svg")
     .attr("class", "chart" + index)
@@ -335,6 +352,8 @@ function addCheckBox(variableList, variable) {
   var variableID = removeQuotes(variable);
   variableID = removeSpaces(variableID);
   variableID = removeParens(variableID);
+  
+  data_names[variableID] = variable;
 
   var element = '<li>';
   element += '<input type="checkbox" name="' + variableID
