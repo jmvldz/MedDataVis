@@ -33,7 +33,8 @@ var chart_data = [];
 var data_names = {};
 // Variable to keep track of data
 var data;
-
+// Calculated values
+var calculatedValues =  ["PaO2 / FiO2", "SaO2 / FiO2"];
 
 d3.json("patient_data.json", function(json) {
   // Keep track of data to add new graphs
@@ -46,6 +47,7 @@ d3.json("patient_data.json", function(json) {
 
   // Adds text boxes for variable names
   addVariableCheckBoxes(json);
+  addCalculatedValues(json);
 
   // Allows toggling the graph on and off
   $('input#variable').click(toggleGraphOnClick);
@@ -53,7 +55,8 @@ d3.json("patient_data.json", function(json) {
   // Draw charts
   drawChart("Heart Rate", "HR", json["HR"], timeDomain);
   drawChart("Temperature", "Temp Value", json["Temp Value"], timeDomain);
-  drawChart("SaO2 (Monitor)", "SaO2 (monitor)", json["SaO2 (monitor)"], timeDomain);
+  drawChart("SF Ratio", "SaO2 / FiO2", json["SaO2 / FiO2"], timeDomain);
+  drawChart("PF Ratio", "PaO2 / FiO2", json["PaO2 / FiO2"], timeDomain);
 
   // Graph intervention data
   var interventionData = [];
@@ -359,12 +362,20 @@ function addVariableCheckBoxes(data) {
   var variableList = $(".variable-selection");
 
   for(var variable in data) {
-    if(isFinite(data[variable][0].value))
+    if(isFinite(data[variable][0].value) && 
+      $.inArray(variable, calculatedValues) == -1)
       addCheckBox(variableList, variable);
   }
 }
 
-function addCalculatedValues(calculated) {
+function addCalculatedValues(data) {
+  var variableList = $(".calculated-values");
+
+  for(var variable in data) {
+    if(isFinite(data[variable][0].value) && 
+      $.inArray(variable, calculatedValues) != -1)
+      addCheckBox(variableList, variable);
+  }
 }
 
 // Appends a check box to the variable list for the specified variable

@@ -37,14 +37,23 @@ def parse():
         
         # Adds it to the variable dict
         variables_dict[variable_name].append(dict([("time", timestamp), ("value", variable_value)]))
-    
+  
+    # Calculates the SF ratio
+    sf_ratio = "SaO2 / FiO2"
+    variables_dict[sf_ratio] = []
+    for recordOne in variables_dict["FiO2"]:
+      for recordTwo in variables_dict["SaO2 (monitor)"]:
+        if recordOne["time"] == recordTwo["time"]:
+          calculatedValue = float(recordTwo["value"]) / float(recordOne["value"])
+          variables_dict[sf_ratio].append(dict([("time", recordOne["time"]), ("value", repr(calculatedValue))]))
+      
     # Checking
-    print variables_dict
+    print variables_dict["FiO2"]
     print len(variables_dict)
     
     # Dumps it to a json
     json_dump = json.dumps(variables_dict, sort_keys=True, indent=4)
-    print type(json_dump)
+    # print type(json_dump)
     f = open('patient_data.json', 'w')
     f.write(json_dump)
     f.close()
