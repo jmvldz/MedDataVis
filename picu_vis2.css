@@ -156,6 +156,11 @@ body {
   width: 940px; 
 }
 
+.container-fluid > .content {
+  margin-left:240px;
+  width:830px
+}
+
 /* .container-fluid > .content { 
   margin-right:0px;
 } */
@@ -176,8 +181,15 @@ body {
 .page-header {
   background-color: #f5f5f5;
   padding: 20px 20px 10px;
-  margin: -20px -20px 20px;
+  margin: -20px 0 25px -20px;
   height:90px;
+  width:830px;
+}
+
+@media screen {
+  body > div .page-header {
+    position:fixed;
+  }
 }
 
 /* Styles you shouldn't keep as they are for displaying this base example only */
