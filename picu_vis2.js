@@ -132,7 +132,13 @@ function drawTimeline(timeDomain) {
         x.domain([start, end]);
 
         // Click in the timeline resets timeline
-        if (start.toString() == end.toString()) x.domain(timeDomain);
+        if (start.toString() == end.toString()) {
+          x.domain(timeDomain);
+          d3.selectAll("rect.resize.e").attr("class", "resize e invisible");
+          d3.selectAll("rect.resize.w").attr("class", "resize w invisible");
+        } else {
+          d3.selectAll("rect.resize.e").attr("class", "resize e");
+          d3.selectAll("rect.resize.w").attr("class", "resize w");       }
 
         // adjust each chart to the new time range
         for (i = 0; i < chart_data.length; i++) {
