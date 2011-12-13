@@ -194,12 +194,7 @@ body {
   margin: -20px 0 25px -20px;
   height:90px;
   width:830px;
-}
-
-@media screen {
-  body > div .page-header {
-    position:fixed;
-  }
+  position:fixed;
 }
 
 .grapharea {
