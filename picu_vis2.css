@@ -73,6 +73,12 @@ stroke: #E0E0E0;
   stroke: #1f77b4;
 }
 
+.point.intervention {
+  fill: #33CC66;
+  stroke-width: 2;
+  stroke: #33CC66;
+}
+
 /* ----------------- Sidebar --------------------*/
 .profileinfo {
   float:left;
