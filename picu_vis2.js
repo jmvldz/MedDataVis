@@ -35,6 +35,8 @@ var data_names = {};
 var data;
 // Calculated values
 var calculatedValues =  ["PaO2 / FiO2", "SaO2 / FiO2"];
+// Interention variables
+var interventionVariables =  ["Dopamine", "Epinephrine", "Mechanical Ventilation", "PT", "PT control", "PTT", "PTT control"];
 
 d3.json("patient_data.json", function(json) {
   // Keep track of data to add new graphs
@@ -46,6 +48,7 @@ d3.json("patient_data.json", function(json) {
   drawTimeline(timeDomain);
 
   // Adds text boxes for variable names
+  addInterventionCheckBoxes(json);
   addVariableCheckBoxes(json);
   addCalculatedValues(json);
 
@@ -53,10 +56,10 @@ d3.json("patient_data.json", function(json) {
   $('input#variable').click(toggleGraphOnClick);
 
   // Draw charts
-  drawChart("Heart Rate", "HR", json["HR"], timeDomain);
-  drawChart("Temperature", "Temp Value", json["Temp Value"], timeDomain);
-  drawChart("SF Ratio", "SaO2 / FiO2", json["SaO2 / FiO2"], timeDomain);
-  drawChart("PF Ratio", "PaO2 / FiO2", json["PaO2 / FiO2"], timeDomain);
+  drawChart("Heart Rate", "HR", json["HR"], timeDomain, "variable");
+  drawChart("Temperature", "Temp Value", json["Temp Value"], timeDomain, "variable");
+  drawChart("SF Ratio", "SaO2 / FiO2", json["SaO2 / FiO2"], timeDomain, "variable");
+  drawChart("PF Ratio", "PaO2 / FiO2", json["PaO2 / FiO2"], timeDomain, "variable");
 
   // Graph intervention data
   var interventionData = [];
@@ -80,7 +83,10 @@ function toggleGraphOnClick() {
   }
   else {
     var dataName = data_names[graphName];
-    drawChart(dataName, dataName, data[dataName], timeDomain);
+    if ($.inArray(dataName, interventionVariables) == -1)
+    drawChart(dataName, dataName, data[dataName], timeDomain, "variable");
+    else     drawChart(dataName, dataName, data[dataName], timeDomain, "intervention");
+
   }
 }
 
@@ -140,8 +146,11 @@ function drawTimeline(timeDomain) {
           chart.select(".area_"+i).attr("d", area(chart_data[i]));
           chart.select(".line_"+i).attr("d", line(chart_data[i]));
 
-          chart.selectAll('.point_'+i).remove();
-          chart.selectAll('.point_'+i)
+          console.log(i + " " + chart.selectAll('.point_'+i)[0].length);
+
+          if (chart.selectAll('.point_'+i)[0].length != 0) {
+            chart.selectAll('.point_'+i).remove();
+            chart.selectAll('.point_'+i)
             .data(chart_data[i])
             .enter().append("svg:circle")
             .attr("clip-path", "url(#clip)")
@@ -149,6 +158,17 @@ function drawTimeline(timeDomain) {
             .attr("cy", function(d) { return y(d.value); })
             .attr("r", 3)
             .attr("class", "point point_" + i);
+          } else {
+            chart.selectAll('.point_intervention_'+i).remove();
+            chart.selectAll('.point_intervention_'+i)
+              .data(chart_data[i])
+              .enter().append("svg:circle")
+              .attr("clip-path", "url(#clip)")
+              .attr("cx", function(d) { return x(d.time); })
+              .attr("cy", function(d) { return y(d.value); })
+              .attr("r", 3)
+              .attr("class", "point intervention point_intervention_" + i);
+          }
         }
     })
     .on("brushend", brushend))
@@ -164,7 +184,7 @@ function drawTimeline(timeDomain) {
 
 }
 
-function drawChart(readableName, dataName, values, timeDomain) {
+function drawChart(readableName, dataName, values, timeDomain, mode) {
 
   dataName = removeNonParsingChars(dataName);
 
@@ -192,6 +212,7 @@ function drawChart(readableName, dataName, values, timeDomain) {
       .attr("id", dataName)
     .append("p")
       .html(readableName)
+      .attr("class", "p_chart")
     .append("div")
     .append("svg:svg")
     .attr("class", "chart" + index)
@@ -226,11 +247,14 @@ function drawChart(readableName, dataName, values, timeDomain) {
       .attr("transform", "translate(" + w + ",0)")
       .call(yAxis);
 
-  // Add the line path.
-  svg.append("svg:path")
-      .attr("class", "line " + "line_" + index)
-      .attr("clip-path", "url(#clip)")
-      .attr("d", line(values));
+
+  if (mode != "intervention") {
+    // Add the line path.
+    svg.append("svg:path")
+        .attr("class", "line " + "line_" + index)
+        .attr("clip-path", "url(#clip)")
+        .attr("d", line(values));
+  }
 
   // Add a small label for the symbol name.
   // svg.append("svg:text")
@@ -247,7 +271,9 @@ function drawChart(readableName, dataName, values, timeDomain) {
      .attr("cx", function(d) { return x(d.time); })
      .attr("cy", function(d) { return y(d.value); })
      .attr("r", 3)
-     .attr("class", "point point_" + index);
+     .attr("class", "point point_" + 
+      (mode == "intervention" ? "intervention_" : "") + index
+      + (mode == "intervention" ? " intervention" : ""));
 }
 
 function createInterventionPlot(interventionValues, interventionNames, timeDomain) {
@@ -372,7 +398,20 @@ function addVariableCheckBoxes(data) {
 
   for(var variable in data) {
     if(isFinite(data[variable][0].value) && 
-      $.inArray(variable, calculatedValues) == -1)
+      $.inArray(variable, calculatedValues) == -1 &&
+      $.inArray(variable, interventionVariables) == -1)
+      addCheckBox(variableList, variable);
+  }
+}
+
+// Append a check box for each variable in data
+function addInterventionCheckBoxes(data) {
+  var variableList = $(".intervention-variables");
+
+  for(var variable in data) {
+    if(isFinite(data[variable][0].value) && 
+      $.inArray(variable, calculatedValues) == -1 &&
+      $.inArray(variable, interventionVariables) != -1)
       addCheckBox(variableList, variable);
   }
 }
@@ -382,7 +421,8 @@ function addCalculatedValues(data) {
 
   for(var variable in data) {
     if(isFinite(data[variable][0].value) && 
-      $.inArray(variable, calculatedValues) != -1)
+      $.inArray(variable, calculatedValues) != -1 &&
+      $.inArray(variable, interventionVariables) == -1)
       addCheckBox(variableList, variable);
   }
 }

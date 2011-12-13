@@ -68,6 +68,12 @@ stroke: #E0E0E0;
   stroke: #1f77b4;
 }
 
+.point.intervention {
+  fill: #33CC66;
+  stroke-width: 2;
+  stroke: #33CC66;
+}
+
 /* ----------------- Sidebar --------------------*/
 .profileinfo {
   float:left;
@@ -95,11 +101,15 @@ stroke: #E0E0E0;
   border-color:rgba(0, 0, 0, 0.15);
 }
 
+.p_chart {
+  border: 1px solid #ccc;
+  color: black;
+}
+
 /* ----------------- End Charts -----------------*/
 
 #charts {
   position: relative;
-  top: 70px;
 }
 
 #charts li {
