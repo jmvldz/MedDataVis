@@ -85,8 +85,9 @@ function toggleGraphOnClick() {
   else {
     var dataName = data_names[graphName];
     if ($.inArray(dataName, interventionVariables) == -1)
-    drawChart(dataName, dataName, data[dataName], timeDomain, "variable");
-    else     drawChart(dataName, dataName, data[dataName], timeDomain, "intervention");
+      drawChart(dataName, dataName, data[dataName], timeDomain, "variable");
+    else
+      drawChart(dataName, dataName, data[dataName], timeDomain, "intervention");
 
   }
 }
@@ -116,8 +117,6 @@ function drawTimeline(timeDomain) {
       .attr("fill", "none")
       .attr("pointer-events", "all")
       .attr("cursor", "crosshair");
-
-
 
   // Time selector rectangle within context view
   context.append("g")
@@ -382,7 +381,7 @@ function brushend() {
   // svg.classed("selecting", !d3.event.target.empty());
 }
 
-// Remove parents
+// Remove non-HTML parsing characters
 function removeNonParsingChars(str) {
   return str.replace(/[() "/]/g, '');
 }
@@ -442,4 +441,3 @@ function addCheckBox(variableList, variable) {
 
   variableList.append(element);
 }
-
