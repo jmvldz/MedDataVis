@@ -56,21 +56,22 @@ d3.json("patient_data.json", function(json) {
   $('input#variable').click(toggleGraphOnClick);
 
   // Draw charts
+  drawChart("Dopamine", "Dopamine", json["Dopamine"], timeDomain, "intervention")
   drawChart("Heart Rate", "HR", json["HR"], timeDomain, "variable");
   drawChart("Temperature", "Temp Value", json["Temp Value"], timeDomain, "variable");
   drawChart("SF Ratio", "SaO2 / FiO2", json["SaO2 / FiO2"], timeDomain, "variable");
   drawChart("PF Ratio", "PaO2 / FiO2", json["PaO2 / FiO2"], timeDomain, "variable");
 
   // Graph intervention data
-  var interventionData = [];
-  var interventionNames = [];
-  interventionData.push(json["Dopamine"]);
-  interventionNames.push("Dopamine");
-  interventionData.push(json["Epinephrine"]);
-  interventionNames.push("Epinephrine");
-  interventionData.push(json["PT control"]);
-  interventionNames.push("PT control");
-  createInterventionPlot(interventionData, interventionNames, timeDomain);
+  // var interventionData = [];
+  // var interventionNames = [];
+  // interventionData.push(json["Dopamine"]);
+  // interventionNames.push("Dopamine");
+  // interventionData.push(json["Epinephrine"]);
+  // interventionNames.push("Epinephrine");
+  // interventionData.push(json["PT control"]);
+  // interventionNames.push("PT control");
+  // createInterventionPlot(interventionData, interventionNames, timeDomain);
 
 });
 
