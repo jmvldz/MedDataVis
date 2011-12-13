@@ -98,7 +98,7 @@ function drawTimeline(timeDomain) {
   // create svg for the timeline
   var context = d3.select("#timeline")
     .append("p")
-    .html("Timeline Navigator")
+    .html("Time Range Selector")
     .append("div")
     .append("svg:svg")
     .attr("height", 50)
