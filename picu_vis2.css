@@ -119,7 +119,7 @@ stroke: #E0E0E0;
 }
 
 .row {
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 }
 
 /* -------------------- Timeline --------------------*/
@@ -131,14 +131,14 @@ stroke: #E0E0E0;
 
 .extent {
   fill: #F0F0F0;
-  stroke-width: 1;
-  stroke: black;
+  stroke-width: 3;
+  stroke: #444;
 }
 
 rect.resize {
-  fill: #D7D7D7;
-  stroke-width: 1;
-  visibility: visible !important;
+  /*fill: #D7D7D7;*/
+  /*stroke-width: 1;*/
+  /*visibility: visible !important;*/
 }
 
 .background {
