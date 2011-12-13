@@ -126,6 +126,9 @@ function drawTimeline(timeDomain) {
         var end = s[1];
         x.domain([start, end]);
 
+        // Click in the timeline resets timeline
+        if (start.toString() == end.toString()) x.domain(timeDomain);
+
         // adjust each chart to the new time range
         for (i = 0; i < chart_data.length; i++) {
           // var t = d3.select(".chart"+i).transition().duration(1);

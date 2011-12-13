@@ -90,10 +90,26 @@ stroke: #E0E0E0;
   margin-bottom: 20px;
 }
 
+/* -------------------- Timeline --------------------*/
+
 #timeline {
   position: fixed;
   z-index: 1;
 }
+
+.extent {
+  fill: #D0D0D0;
+  stroke-width: 2;
+  stroke: black;
+}
+
+rect.resize.w {
+  visibility: visible;
+}
+
+/* ------------------ End Timeline ------------------*/
+
+
 
 .background {
   fill: #FFF;
