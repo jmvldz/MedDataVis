@@ -202,6 +202,10 @@ body {
   }
 }
 
+.grapharea {
+  margin-top:120px
+}
+
 /* Styles you shouldn't keep as they are for displaying this base example only */
 .content .span10,
 .content .span4 {
