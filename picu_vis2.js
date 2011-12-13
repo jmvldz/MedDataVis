@@ -9,7 +9,7 @@ var x = d3.time.scale().range([0, w]),
     xConstant = d3.time.scale().range([0, w]),
     y = d3.scale.linear().range([h, 0]),
     xAxis = d3.svg.axis().scale(x).tickSize(-h).tickSubdivide(false),
-    // xConstantAxis = d3.svg.axis().scale(xConstant).tickSize(-h).tickSubdivide(false),
+    xConstantAxis = d3.svg.axis().scale(xConstant).tickSize(-50).tickSubdivide(false).orient("top"),
     yAxis = d3.svg.axis().scale(y).ticks(4).orient("right");
 
 var timeDomain;
@@ -90,6 +90,9 @@ function drawTimeline(timeDomain) {
 
   // create svg for the timeline
   var context = d3.select("#timeline")
+    .append("p")
+    .html("Timeline Navigator")
+    .append("div")
     .append("svg:svg")
     .attr("height", 50)
     .attr("width", w)
@@ -107,11 +110,7 @@ function drawTimeline(timeDomain) {
       .attr("pointer-events", "all")
       .attr("cursor", "crosshair");
 
-  // Context view x axis
-  context.append("svg:g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + h + ")");
-      // .call(xConstantAxis);
+
 
   // Time selector rectangle within context view
   context.append("g")
@@ -155,6 +154,13 @@ function drawTimeline(timeDomain) {
     .on("brushend", brushend))
   .selectAll("rect")
     .attr("height", h);
+
+      // Context view x axis
+  context.select(".brush").append("svg:g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + 15 + ")")
+      .call(xConstantAxis);
+
 
 }
 
