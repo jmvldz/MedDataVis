@@ -130,15 +130,15 @@ stroke: #E0E0E0;
 }
 
 .extent {
-  fill: #F9F9F9;
-  stroke-width: 1;
-  stroke: black;
+  fill: #F0F0F0;
+  stroke-width: 3;
+  stroke: #444;
 }
 
 rect.resize {
-  fill: #D7D7D7;
-  stroke-width: 1;
-  visibility: visible !important;
+  /*fill: #D7D7D7;*/
+  /*stroke-width: 1;*/
+  /*visibility: visible !important;*/
 }
 
 .background {
@@ -189,7 +189,7 @@ body {
 
 /* Page header tweaks */
 .page-header {
-  background-color: #f5f5f5;
+  background-color: #EAF8FF;
   padding: 20px 20px 10px;
   margin: -20px 0 25px -20px;
   height:90px;
