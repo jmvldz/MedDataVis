@@ -131,13 +131,13 @@ stroke: #E0E0E0;
 
 .extent {
   fill: #F9F9F9;
-  /*stroke-width: 1;*/
-  /*stroke: black;*/
+  stroke-width: 1;
+  stroke: black;
 }
 
 rect.resize {
   fill: #D7D7D7;
-  /*stroke-width: 1;*/
+  stroke-width: 1;
   visibility: visible !important;
 }
 
