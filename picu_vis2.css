@@ -73,6 +73,12 @@ stroke: #E0E0E0;
   stroke: #1f77b4;
 }
 
+/* ----------------- Sidebar --------------------*/
+.profileinfo {
+  float:left;
+  margin-left:35px;
+}
+
 /* ----------------- End Charts -----------------*/
 
 #charts {
