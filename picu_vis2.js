@@ -212,6 +212,7 @@ function drawChart(readableName, dataName, values, timeDomain, mode) {
       .attr("id", dataName)
     .append("p")
       .html(readableName)
+      .attr("class", "p_chart")
     .append("div")
     .append("svg:svg")
     .attr("class", "chart" + index)
