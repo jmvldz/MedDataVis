@@ -135,6 +135,20 @@ ul {
 .p_chart {
   border: 1px solid #ccc;
   color: black;
+  height: 175px;
+  width: 830px;
+}
+
+.chart {
+  position: relative;
+  top: -165px;
+  left: 9px;
+}
+
+.variable-name {
+  position: relative;
+  top: -175px;
+  left: 35px;
 }
 
 /* ----------------- End Charts -----------------*/

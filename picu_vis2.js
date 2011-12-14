@@ -9,7 +9,7 @@ var x = d3.time.scale().range([0, w]),
     xConstant = d3.time.scale().range([0, w]),
     y = d3.scale.linear().range([h, 0]),
     xAxis = d3.svg.axis().scale(x).tickSize(-h).tickSubdivide(false),
-    xConstantAxis = d3.svg.axis().scale(xConstant).tickSize(-50).tickSubdivide(false).orient("top"),
+    xConstantAxis = d3.svg.axis().scale(xConstant).tickSize(-30).tickSubdivide(false).orient("top"),
     yAxis = d3.svg.axis().scale(y).ticks(4).orient("right");
 
 var timeDomain;
@@ -122,8 +122,8 @@ function drawTimeline(timeDomain) {
   context.append("g")
     .attr("class", "brush")
     .call(d3.svg.brush().x(xConstant)
-    .on("brushstart", brushstart)
-    .on("brush", function() {
+      .on("brushstart", brushstart)
+      .on("brush", function() {
 
         // set x axis to time chosen by user
         var s = d3.event.target.extent();
@@ -217,16 +217,18 @@ function drawChart(readableName, dataName, values, timeDomain, mode) {
     .append("li")
       .attr("id", dataName)
     .append("p")
-      .html(readableName)
+      .html("<img src=./button.png />"
+        + "<div class=variable-name>" + readableName + "</div>")
       .attr("class", "p_chart")
     .append("div")
+      .attr("class", "chart")
     .append("svg:svg")
-    .attr("class", "chart" + index)
-    .attr("height", h+30) // room for the axis, make a constant later
-    .attr("width", w+30) // room for the axis, make a constant later
+      .attr("class", "chart" + index)
+      .attr("height", h+30) // room for the axis, make a constant later
+      .attr("width", w+30) // room for the axis, make a constant later
     .append("svg:g")
-    .attr("transform", "translate(0," + 10 + ")")
-    .attr("class", "chart-area" + index);
+      .attr("transform", "translate(0," + 10 + ")")
+      .attr("class", "chart-area" + index);
 
   // Add the clip path.
   svg.append("svg:clipPath")
