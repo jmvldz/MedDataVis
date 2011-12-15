@@ -142,7 +142,7 @@ ul {
 .chart {
   position: relative;
   top: -165px;
-  left: 9px;
+  left: 40px;
 }
 
 .variable-name {
@@ -150,6 +150,7 @@ ul {
   top: -175px;
   left: 35px;
 }
+
 
 /* ----------------- End Charts -----------------*/
 
@@ -172,6 +173,11 @@ ul {
 #timeline {
   position: fixed;
   z-index: 1;
+}
+
+#timeline > p {
+  position: relative;
+  left: 40px;
 }
 
 .extent {
@@ -221,10 +227,6 @@ body {
   margin-left:240px;
   width:830px
 }
-
-/* .container-fluid > .content { 
-  margin-right:0px;
-} */
 
 /* The white background content wrapper */
 .content {

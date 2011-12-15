@@ -1,5 +1,5 @@
 var m = [80, 100, 80, 80],
-    w = 960 - m[1] - m[3],
+    w = 930 - m[1] - m[3],
     h = 250 - m[0] - m[2],
     h0 = m[0];
     parse = d3.time.format("%Y-%m-%dT%H:%M:%SZ").parse;
@@ -61,17 +61,6 @@ d3.json("patient_data.json", function(json) {
   drawChart("Temperature", "Temp Value", json["Temp Value"], timeDomain, "variable");
   drawChart("SF Ratio", "SaO2 / FiO2", json["SaO2 / FiO2"], timeDomain, "variable");
   drawChart("PF Ratio", "PaO2 / FiO2", json["PaO2 / FiO2"], timeDomain, "variable");
-
-  // Graph intervention data
-  // var interventionData = [];
-  // var interventionNames = [];
-  // interventionData.push(json["Dopamine"]);
-  // interventionNames.push("Dopamine");
-  // interventionData.push(json["Epinephrine"]);
-  // interventionNames.push("Epinephrine");
-  // interventionData.push(json["PT control"]);
-  // interventionNames.push("PT control");
-  // createInterventionPlot(interventionData, interventionNames, timeDomain);
 
 });
 
@@ -264,13 +253,6 @@ function drawChart(readableName, dataName, values, timeDomain, mode) {
         .attr("d", line(values));
   }
 
-  // Add a small label for the symbol name.
-  // svg.append("svg:text")
-  //     .attr("x", w - 6)
-  //     .attr("y", h - 6)
-  //     .attr("text-anchor", "end")
-  //     .text(values[0].symbol);
-
   // Add dots
   svg.selectAll('.point')
     .data(values)
@@ -374,19 +356,15 @@ function getTotalTimeOfStay(data) {
 }
 
 function brushstart() {
-  // svg.classed("selecting", true);
 }
 
 function brush() {
   var s = d3.event.target.extent();
   console.log(s[0].toString());
   console.log(s[1].toString());
-
-  // circle.classed("selected", function(d) { return s[0] <= d && d <= s[1]; });
 }
 
 function brushend() {
-  // svg.classed("selecting", !d3.event.target.empty());
 }
 
 // Remove non-HTML parsing characters
