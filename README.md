@@ -1,4 +1,4 @@
-*MedDataVis - Visualizing PICU Patient Data - Valdez, Ong, Guo, Lau*
+**MedDataVis - Visualizing PICU Patient Data - Valdez, Ong, Guo, Lau**
 
 parse\_json.py: exports patient data in a d3-friendly format
 
